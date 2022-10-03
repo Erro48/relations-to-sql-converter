@@ -64,12 +64,29 @@ class Relation {
 		body.shift()
 
 		body.forEach((attr) => {
+			let objAttr
+			let value
+			let index = body.indexOf(attr)
+
 			if (attr.split(': ').length == 2) {
 				// è fk
 
-				let index = body.indexOf(attr)
-				body[index] = this.#extractForeignKey(attr)
+				value = this.#extractForeignKey(attr)
 			}
+
+			if (attr.includes('*')) {
+				objAttr = {
+					value,
+					nullable: true,
+				}
+			} else {
+				objAttr = {
+					value,
+					nullable: false,
+				}
+			}
+
+			body[index] = objAttr
 		})
 
 		return body
