@@ -72,11 +72,13 @@ class Relation {
 				// è fk
 
 				value = this.#extractForeignKey(attr)
+			} else {
+				value = attr
 			}
 
 			if (attr.includes('*')) {
 				objAttr = {
-					value,
+					value: value.replace('*', ''),
 					nullable: true,
 				}
 			} else {
