@@ -6,6 +6,34 @@ class Relation {
 		this.unique = this.#getUnique(line)
 	}
 
+	#splitByNestedParenthesis(string, separator) {
+		let array = string.split(separator)
+		let output = []
+		let parenthesisIndex = -1
+		let isInParenthesis = false
+
+		for (let i = 0; i < array.length; i++) {
+			if (
+				(array[i].includes('(') && array[i].includes(')')) ||
+				(!array[i].includes('(') && !array[i].includes(')'))
+			) {
+				output.push(array[i])
+			} else if (array[i].includes('(')) {
+				isInParenthesis = true
+				parenthesisIndex = i
+			} else if (array[i].includes(')')) {
+				isInParenthesis = false
+				let attr = ''
+				for (let j = parenthesisIndex; j <= i; j++) {
+					attr += array[j] + ', '
+				}
+				output.push(attr.slice(0, -2))
+			}
+		}
+
+		return output
+	}
+
 	#getName(line) {
 		return line.split('(')[0]
 	}
@@ -17,32 +45,7 @@ class Relation {
 		}
 		line = line.slice(1, -1)
 
-		let tmpAttrs = line.split(', ')
-		let attrs = []
-		let parIndex = -1
-		let parFlag = false
-
-		for (let i = 0; i < tmpAttrs.length; i++) {
-			if (
-				(tmpAttrs[i].indexOf('(') !== -1 && tmpAttrs[i].indexOf(')') !== -1) ||
-				(tmpAttrs[i].indexOf('(') === -1 && tmpAttrs[i].indexOf(')') === -1)
-			) {
-				attrs.push(tmpAttrs[i])
-			} else if (tmpAttrs[i].indexOf('(') !== -1) {
-				// contiene (
-				parFlag = true
-				parIndex = i
-			} else if (tmpAttrs[i].indexOf(')') !== -1) {
-				parFlag = false
-				let attr = ''
-				for (let j = parIndex; j <= i; j++) {
-					attr += tmpAttrs[j] + ', '
-				}
-				attrs.push(attr.slice(0, -2))
-			}
-		}
-
-		return attrs
+		return this.#splitByNestedParenthesis(line, ', ')
 	}
 
 	#getPrimaryKey(line) {
@@ -99,7 +102,12 @@ class Relation {
 		if (index === -1) return
 
 		let unique = line.substring(index)
+
 		unique = unique.slice(7, -1).split(', ')
+
+		unique.forEach((attr) => {})
+
+		//unique = unique.slice(7, -1).split(', ')
 		return unique
 	}
 
@@ -120,6 +128,8 @@ function convertRelationToObject(line) {
 	let primaryKey = rel.primaryKey
 	let attributes = rel.attributes
 	let unique = rel.unique
+
+	//console.log(unique)
 
 	return {
 		name,
