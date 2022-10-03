@@ -42,32 +42,36 @@ function convertObjectToSQL(obj) {
 		obj.primaryKey.forEach((key) => {
 			let value =
 				Object.getPrototypeOf(key) === Object.prototype ? key.attribute : key
-			attributes.push(value)
+			attributes.push({
+				value,
+				nullable: false,
+			})
 			constraintsPK.push(value)
 		})
 
 		// set attributes values
 		obj.attributes.forEach((attr) => {
 			let value =
-				Object.getPrototypeOf(attr) === Object.prototype ? attr.attribute : attr
+				Object.getPrototypeOf(attr.value) === Object.prototype
+					? attr.value.attribute
+					: attr.value
 
-			console.log(attr)
-			displayTables()
-			// throw exception : not in order tables
-
-			if (Object.getPrototypeOf(attr) === Object.prototype) {
+			if (Object.getPrototypeOf(attr.value) === Object.prototype) {
 				constraintsFK.push({
 					name: 'FK_' + obj.name,
-					value: attr.attribute,
+					value: attr.value.attribute,
 					reference: {
-						name: attr.relation,
-						value: tables.find((table) => table.name === attr.relation)
+						name: attr.value.relation,
+						value: tables.find((table) => table.name === attr.value.relation)
 							.primaryKey,
 					},
 				})
 			}
 
-			attributes.push(value)
+			attributes.push({
+				value,
+				nullable: attr.nullable,
+			})
 		})
 	} catch (exception) {
 		throw new Error('Relations are not in order')
@@ -75,7 +79,7 @@ function convertObjectToSQL(obj) {
 
 	// add attributes
 	attributes.forEach((attr) => {
-		query += `\t${attr}  NOT NULL,\n`
+		query += `\t${attr.value}  ${attr.nullable ? '' : 'NOT NULL'},\n`
 	})
 
 	query += `\tPRIMARY KEY (${constraintsPK.join(',')}),\n`
@@ -83,25 +87,6 @@ function convertObjectToSQL(obj) {
 	constraintsFK.forEach((fk) => {
 		query += `\tCONSTRAINT ${fk.name} FOREIGN KEY (${fk.value}) REFERENCES ${fk.reference.name}(${fk.reference.value}),\n`
 	})
-
-	// add primary key constraints
-	// if (obj.primaryKey.length == 1) {
-	// 	if (Object.getPrototypeOf(obj.primaryKey[0]) === Object.prototype) {
-	// 	} else {
-	// 		query += `\tPRIMARY KEY (${obj.primaryKey[0]})\n`
-	// 	}
-	// } else {
-	// 	let value = ''
-	// 	for (let i = 0; i < obj.primaryKey.length; i++) {
-	// 		value += obj.primaryKey[i].attribute + ','
-	// 	}
-	// 	value = value.slice(0, -1)
-	// 	query += `\tCONSTRAINT PK_${obj.name} PRIMARY KEY (${value})\n`
-	// }
-
-	// constraintsFK.forEach((fk) => {
-	// 	query += `\tCONSTRAINT ${fk.name} FOREING KEY (${fk.value}) REFERENCES ${fk.reference.name}(${fk.reference.value})\n`
-	// })
 
 	query += `)`
 	return query
