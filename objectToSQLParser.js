@@ -37,37 +37,41 @@ function convertObjectToSQL(obj) {
 
 	let query = `CREATE TABLE ${obj.name} (\n`
 
-	// set keys values
-	obj.primaryKey.forEach((key) => {
-		let value =
-			Object.getPrototypeOf(key) === Object.prototype ? key.attribute : key
-		attributes.push(value)
-		constraintsPK.push(value)
-	})
+	try {
+		// set keys values
+		obj.primaryKey.forEach((key) => {
+			let value =
+				Object.getPrototypeOf(key) === Object.prototype ? key.attribute : key
+			attributes.push(value)
+			constraintsPK.push(value)
+		})
 
-	// set attributes values
-	obj.attributes.forEach((attr) => {
-		let value =
-			Object.getPrototypeOf(attr) === Object.prototype ? attr.attribute : attr
+		// set attributes values
+		obj.attributes.forEach((attr) => {
+			let value =
+				Object.getPrototypeOf(attr) === Object.prototype ? attr.attribute : attr
 
-		console.log(attr)
-		displayTables()
-		// throw exception : not in order tables
+			console.log(attr)
+			displayTables()
+			// throw exception : not in order tables
 
-		if (Object.getPrototypeOf(attr) === Object.prototype) {
-			constraintsFK.push({
-				name: 'FK_' + obj.name,
-				value: attr.attribute,
-				reference: {
-					name: attr.relation,
-					value: tables.find((table) => table.name === attr.relation)
-						.primaryKey,
-				},
-			})
-		}
+			if (Object.getPrototypeOf(attr) === Object.prototype) {
+				constraintsFK.push({
+					name: 'FK_' + obj.name,
+					value: attr.attribute,
+					reference: {
+						name: attr.relation,
+						value: tables.find((table) => table.name === attr.relation)
+							.primaryKey,
+					},
+				})
+			}
 
-		attributes.push(value)
-	})
+			attributes.push(value)
+		})
+	} catch (exception) {
+		throw new Error('Relations are not in order')
+	}
 
 	// add attributes
 	attributes.forEach((attr) => {
