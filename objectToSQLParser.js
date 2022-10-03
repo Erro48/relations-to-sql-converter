@@ -88,6 +88,7 @@ function convertObjectToSQL(obj) {
 		query += `\tCONSTRAINT ${fk.name} FOREIGN KEY (${fk.value}) REFERENCES ${fk.reference.name}(${fk.reference.value}),\n`
 	})
 
+	query = query.slice(0, -2) + '\n'
 	query += `)`
 	return query
 }
