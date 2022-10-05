@@ -103,12 +103,24 @@ class Relation {
 
 		let unique = line.substring(index)
 
-		unique = unique.slice(7, -1).split(', ')
+		unique = unique.slice(7, -1)
 
-		unique.forEach((attr) => {})
+		let output = this.#splitByNestedParenthesis(unique, ', ')
 
-		//unique = unique.slice(7, -1).split(', ')
-		return unique
+		output.forEach((attr) => {
+			let value = attr
+			let index = output.indexOf(attr)
+			if (attr.includes('(')) {
+				value = attr
+					.slice(1, -1)
+					.split(', ')
+					.map((a) => (a.includes(':') ? this.#extractForeignKey(a) : a))
+			}
+
+			output[index] = value
+		})
+
+		return output
 	}
 
 	#extractForeignKey(attribute) {

@@ -32,6 +32,7 @@ function convertObjectToSQL(obj) {
 	let constraintsFK = []
 	let constraintsPK = []
 	let attributes = []
+	let uniques = []
 
 	updateTables(obj)
 
@@ -73,7 +74,37 @@ function convertObjectToSQL(obj) {
 				nullable: attr.nullable,
 			})
 		})
+
+		if (obj.unique !== undefined) {
+			obj.unique.forEach((attr) => {
+				let uniqueObj = {
+					name: 'UN_',
+				}
+				if (Array.isArray(attr)) {
+					let innerAttr = []
+					attr.forEach((a) => {
+						if (a.attribute !== undefined) {
+							a = a.attribute
+						}
+						innerAttr.push({ value: a })
+					})
+
+					uniqueObj = {
+						name: 'UN_' + innerAttr[0],
+						value: innerAttr,
+					}
+				} else {
+					uniqueObj = {
+						name: 'UN_' + attr,
+						value: attr,
+					}
+				}
+
+				uniques.push(uniqueObj)
+			})
+		}
 	} catch (exception) {
+		console.log(exception)
 		throw new Error('Relations are not in order')
 	}
 
@@ -82,10 +113,21 @@ function convertObjectToSQL(obj) {
 		query += `\t${attr.value}  ${attr.nullable ? '' : 'NOT NULL'},\n`
 	})
 
-	query += `\tPRIMARY KEY (${constraintsPK.join(',')}),\n`
+	query += `\tCONSTRAINT PK_${obj.name} PRIMARY KEY (${constraintsPK.join(
+		','
+	)}),\n`
 
 	constraintsFK.forEach((fk) => {
 		query += `\tCONSTRAINT ${fk.name} FOREIGN KEY (${fk.value}) REFERENCES ${fk.reference.name}(${fk.reference.value}),\n`
+	})
+
+	uniques.forEach((unique) => {
+		let value = unique.value
+		if (Array.isArray(unique)) {
+			value = unique.map((un) => un.value).join(',')
+		}
+
+		query += `\tCONSTRAINT ${unique.name} UNIQUE (${value}),\n`
 	})
 
 	query = query.slice(0, -2) + '\n'
