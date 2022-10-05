@@ -96,9 +96,10 @@ function convertObjectToSQL(obj) {
 						innerAttr.push({ value: a })
 					})
 
+					console.log(innerAttr)
 					uniqueObj = {
-						name: 'UN_' + innerAttr[0],
-						value: innerAttr,
+						name: 'UN_' + innerAttr[0].value,
+						value: innerAttr.map((a) => a.value),
 					}
 				} else {
 					uniqueObj = {
