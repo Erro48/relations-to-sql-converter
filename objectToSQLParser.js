@@ -28,13 +28,11 @@ function displayTables() {
 	)
 }
 
-function convertObjectToSQL(obj) {
+function convertObjectToSQL(obj, typeFlag) {
 	let constraintsFK = []
 	let constraintsPK = []
 	let attributes = []
 	let uniques = []
-
-	let typeFlag = true
 
 	updateTables(obj)
 
