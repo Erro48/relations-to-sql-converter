@@ -34,6 +34,8 @@ function convertObjectToSQL(obj) {
 	let attributes = []
 	let uniques = []
 
+	let typeFlag = true
+
 	updateTables(obj)
 
 	let query = `CREATE TABLE ${obj.name} (\n`
@@ -43,8 +45,11 @@ function convertObjectToSQL(obj) {
 		obj.primaryKey.forEach((key) => {
 			let value =
 				Object.getPrototypeOf(key) === Object.prototype ? key.attribute : key
+			let type = 'int'
+
 			attributes.push({
 				value,
+				type,
 				nullable: false,
 			})
 			constraintsPK.push(value)
@@ -56,10 +61,11 @@ function convertObjectToSQL(obj) {
 				Object.getPrototypeOf(attr.value) === Object.prototype
 					? attr.value.attribute
 					: attr.value
+			let type = 'int'
 
 			if (Object.getPrototypeOf(attr.value) === Object.prototype) {
 				constraintsFK.push({
-					name: 'FK_' + attr.value.attribute,
+					name: 'FK_' + obj.name + '_' + attr.value.attribute,
 					value: attr.value.attribute,
 					reference: {
 						name: attr.value.relation,
@@ -71,6 +77,7 @@ function convertObjectToSQL(obj) {
 
 			attributes.push({
 				value,
+				type,
 				nullable: attr.nullable,
 			})
 		})
@@ -110,7 +117,9 @@ function convertObjectToSQL(obj) {
 
 	// add attributes
 	attributes.forEach((attr) => {
-		query += `\t${attr.value}  ${attr.nullable ? '' : 'NOT NULL'},\n`
+		query += `\t${attr.value} ${typeFlag ? attr.type : ''} ${
+			attr.nullable ? '' : 'NOT NULL'
+		},\n`
 	})
 
 	query += `\tCONSTRAINT PK_${obj.name} PRIMARY KEY (${constraintsPK.join(
@@ -131,7 +140,7 @@ function convertObjectToSQL(obj) {
 	})
 
 	query = query.slice(0, -2) + '\n'
-	query += `)`
+	query += `);`
 	return query
 }
 
