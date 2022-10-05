@@ -59,7 +59,7 @@ function convertObjectToSQL(obj) {
 
 			if (Object.getPrototypeOf(attr.value) === Object.prototype) {
 				constraintsFK.push({
-					name: 'FK_' + obj.name,
+					name: 'FK_' + attr.value.attribute,
 					value: attr.value.attribute,
 					reference: {
 						name: attr.value.relation,
