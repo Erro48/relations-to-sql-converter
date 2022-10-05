@@ -15,7 +15,7 @@ class Relation {
 		for (let i = 0; i < array.length; i++) {
 			if (
 				(array[i].includes('(') && array[i].includes(')')) ||
-				(!array[i].includes('(') && !array[i].includes(')'))
+				(!array[i].includes('(') && !array[i].includes(')') && !isInParenthesis)
 			) {
 				output.push(array[i])
 			} else if (array[i].includes('(')) {
