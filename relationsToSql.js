@@ -29,7 +29,7 @@ async function relationsToSql(filepath, dbCreationFlag, typeFlag) {
 	}
 
 	if (dbCreationFlag) {
-		fileContent = `IF EXISTS ${db.name};\nDROP DATABASE ${db.name};\nCREATE DATABASE ${db.name};\nUSE ${db.name};\n\n`
+		fileContent = `DROP DATABASE IF EXISTS ${db.name};\nCREATE DATABASE ${db.name};\nUSE ${db.name};\n\n`
 	}
 
 	fileContent += queries
