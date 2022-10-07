@@ -54,8 +54,18 @@ class Relation {
 		keys.forEach((k) => {
 			let index = keys.indexOf(k)
 
-			if (k.split(': ').length == 2) {
-				keys[index] = this.#extractForeignKey(k)
+			k = {
+				value: k.split('>')[0],
+				type: k.split('>')[1],
+			}
+
+			if (k.value.split(': ').length == 2) {
+				keys[index] = {
+					value: this.#extractForeignKey(k.value),
+					type: k.type,
+				}
+			} else {
+				keys[index] = k
 			}
 		})
 
@@ -66,32 +76,29 @@ class Relation {
 		let body = this.#getBody(line)
 		body.shift()
 
-		body.forEach((attr) => {
-			let objAttr
-			let value
-			let index = body.indexOf(attr)
+		body.forEach((attribute) => {
+			let objAttribute
+			let index = body.indexOf(attribute)
 
-			if (attr.split(': ').length == 2) {
-				// è fk
-
-				value = this.#extractForeignKey(attr)
-			} else {
-				value = attr
+			attribute = {
+				value: attribute.split('>')[0],
+				type: attribute.split('>')[1],
 			}
 
-			if (attr.includes('*')) {
-				objAttr = {
-					value: value.replace('*', ''),
-					nullable: true,
-				}
-			} else {
-				objAttr = {
-					value,
-					nullable: false,
-				}
-			}
+			let value =
+				attribute.value.split(': ').length == 2
+					? this.#extractForeignKey(attribute.value)
+					: attribute.value
 
-			body[index] = objAttr
+			objAttribute = attribute.value.includes('*')
+				? {
+						value: value.replace('*', ''),
+						nullable: true,
+						type: attribute.type,
+				  }
+				: { value, nullable: false, type: attribute.type }
+
+			body[index] = objAttribute
 		})
 
 		return body

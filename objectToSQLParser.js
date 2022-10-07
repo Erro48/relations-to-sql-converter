@@ -42,8 +42,10 @@ function convertObjectToSQL(obj, typeFlag) {
 		// set keys values
 		obj.primaryKey.forEach((key) => {
 			let value =
-				Object.getPrototypeOf(key) === Object.prototype ? key.attribute : key
-			let type = 'int'
+				Object.getPrototypeOf(key.value) === Object.prototype
+					? key.value.attribute
+					: key.value
+			let type = key.type
 
 			attributes.push({
 				value,
@@ -59,18 +61,20 @@ function convertObjectToSQL(obj, typeFlag) {
 				Object.getPrototypeOf(attr.value) === Object.prototype
 					? attr.value.attribute
 					: attr.value
-			let type = 'int'
+			let type = attr.type
 
 			if (Object.getPrototypeOf(attr.value) === Object.prototype) {
-				constraintsFK.push({
+				let tmp = {
 					name: 'FK_' + obj.name + '_' + attr.value.attribute,
 					value: attr.value.attribute,
 					reference: {
 						name: attr.value.relation,
 						value: tables.find((table) => table.name === attr.value.relation)
-							.primaryKey,
+							.primaryKey[0].value,
 					},
-				})
+				}
+
+				constraintsFK.push(tmp)
 			}
 
 			attributes.push({
