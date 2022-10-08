@@ -98,7 +98,6 @@ function convertObjectToSQL(obj, typeFlag) {
 						innerAttr.push({ value: a })
 					})
 
-					console.log(innerAttr)
 					uniqueObj = {
 						name: 'UN_' + innerAttr[0].value,
 						value: innerAttr.map((a) => a.value),
@@ -114,7 +113,6 @@ function convertObjectToSQL(obj, typeFlag) {
 			})
 		}
 	} catch (exception) {
-		console.log(exception)
 		throw new Error('Relations are not in order')
 	}
 

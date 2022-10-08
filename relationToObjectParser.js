@@ -12,8 +12,6 @@ class Relation {
 		let parenthesisIndex = -1
 		let isInParenthesis = false
 
-		console.log(array)
-
 		for (let i = 0; i < array.length; i++) {
 			if (
 				(array[i].match(/\(|\)/g) || []).length % 2 == 0 &&
@@ -35,7 +33,6 @@ class Relation {
 				for (let j = parenthesisIndex; j <= i; j++) {
 					attr += array[j] + ', '
 				}
-				console.log(attr)
 				output.push(attr.slice(0, -2))
 			}
 		}
@@ -59,11 +56,6 @@ class Relation {
 
 	#getPrimaryKey(line) {
 		let keys = this.#getBody(line)[0].slice(4, -1).split(', ')
-
-		if (this.#getName(line) == 'Liveries') {
-			console.log('==================================')
-			console.log(this.#getBody(line))
-		}
 
 		keys.forEach((k) => {
 			let index = keys.indexOf(k)
@@ -161,8 +153,6 @@ function convertRelationToObject(line) {
 	let primaryKey = rel.primaryKey
 	let attributes = rel.attributes
 	let unique = rel.unique
-
-	//console.log(unique)
 
 	return {
 		name,
