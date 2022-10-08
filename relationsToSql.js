@@ -1,5 +1,5 @@
-const convertRelationToObject = require('./relationToObjectParser')
-const convertObjectToSQL = require('./objectToSQLParser')
+const convertRelationToObject = require('./relationToObjectConverter')
+const convertObjectToSQL = require('./objectToSQLConverter')
 const fs = require('fs')
 const readline = require('readline')
 const path = require('path')
