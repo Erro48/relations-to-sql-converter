@@ -6,6 +6,7 @@ JS module which converts a file containing db relations into a MySql file with C
 
 Table of Contents
 =================
+* [Usage](#usage)
 * [Inputs](#inputs)
   * [Input file](#input-file)
     * [Relation Name](#relation-name)
@@ -17,6 +18,10 @@ Table of Contents
   * [Type flag](#type-flag)
 * [Output File](#output-file)
 
+
+Usage
+================
+The method which converts the relational schema into a sql query file is `relationalToSql` in `relationalToSql.js` module. The other two modules are used internally by `relationalToSql.js` module.
 
 Inputs
 ================
@@ -104,6 +109,10 @@ USE inputName;
 ## Type flag
 
 If this flag is set to `true`, then each attribute must be followed by `>` and the type of the attribute, without any spaces.
+
+```
+RelationName(PK:(PrimaryKey>int), Attribute1>varchar(10), Attribute2*>date, Table2: ForeignKey>tinyint unsigned) Unique(Attribute1)
+```
 
 
 Output File
