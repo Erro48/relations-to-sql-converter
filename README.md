@@ -105,6 +105,10 @@ USE inputName;
 
 If this flag is set to `true`, then each attribute must be followed by `>` and the type of the attribute, without any spaces.
 
+```
+RelationName(PK:(PrimaryKey>int), Attribute1>varchar(10), Attribute2*>date, Table2: ForeignKey>tinyint unsigned) Unique(Attribute1)
+```
+
 
 Output File
 ==========
