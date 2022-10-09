@@ -47,6 +47,20 @@ function convertObjectToSQL(obj, typeFlag) {
 					: key.value
 			let type = key.type
 
+			if (Object.getPrototypeOf(key.value) === Object.prototype) {
+				let tmp = {
+					name: 'FK_' + obj.name + '_' + key.value.attribute,
+					value: key.value.attribute,
+					reference: {
+						name: key.value.relation,
+						value: tables.find((table) => table.name === key.value.relation)
+							.primaryKey[0].value,
+					},
+				}
+
+				constraintsFK.push(tmp)
+			}
+
 			attributes.push({
 				value,
 				type,
