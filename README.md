@@ -4,19 +4,18 @@
 
 JS module which converts a file containing db relations into a MySql file with CREATE TABLE queries.
 
-Table of Contents
-=================
-* [Usage](#usage)
-* [Inputs](#inputs)
+#### Table of Contents
+- [Usage](#usage)
+- [Inputs](#inputs)
   * [Input file](#input-file)
-    * [Relation Name](#relation-name)
-    * [Primary Key](#primary-key)
-    * [Attributes](#attributes)
-    * [Foreign Key](#foreign-key)
-    * [Unique](#unique)
+    + [Relation Name](#relation-name)
+    + [Primary Key](#primary-key)
+    + [Attributes](#attributes)
+    + [Foreign Key](#foreign-key)
+    + [Unique](#unique)
   * [DB creation flag](#db-creation-flag)
   * [Type flag](#type-flag)
-* [Output File](#output-file)
+- [Output File](#output-file)
 
 
 Usage
