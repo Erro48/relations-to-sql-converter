@@ -36,7 +36,7 @@ The method takes as input three parameters:
 The input file has to be a text file, formatted like below:
 
 ```
-RelationName(PK:(PrimaryKey), Attribute1, Attribute2*, Table2: ForeignKey) Unique(Attribute1)
+RelationName((PrimaryKey), Attribute1, Attribute2*, Table2: ForeignKey) Unique(Attribute1)
 ```
 
 Where:
@@ -45,7 +45,7 @@ Where:
 - `Attribute1`, <b>Attribute2*</b> are the other attributes of the relation;
 - `ForeignKey` is a foreign key, referring to the primary key of the relation <i>Table2</i>.
 
-**IMPORTANT!**: relations must be ordered, so that a relation first has all the relations it imports foreign keys to.
+⚠️**IMPORTANT!**: relations must be ordered, so that a relation first has all the relations it imports foreign keys to.
 
 ### Relation Name
 
@@ -54,25 +54,27 @@ The relation name will be the name of the sql table, in the output file.
 
 ### Primary Key
 
-The primary key attribute needs to be the first attribute, and needs to be inside parenthesis and preceded by `PK:`.
+The primary key attribute needs to be the first attribute, and needs to be inside parenthesis.
 If the relation has a composite primary key, the attributes composing it must to be separated by a `,` and a white space.
 
 ```
-RelationName(PK:(SingleAttributeKey))
-RelationName(PK:(Multiple, Attribute, Key))
+RelationName((SingleAttributeKey))
+RelationName((Multiple, Attribute, Key))
 ```
 
 ### Attributes
 
 The attributes must be separated by a `,` followed by a white space.
 To indicate an optional attribute, you need to use an `*` after the attribute name.
+To indicate an attribute with AUTO_INCREMENT property, you need to use a `^` after the attribute name. This is valid for primary key too.
+All the values used to add propery to the attributes, can be written in any order (i.e. `attribute*^` is the same as `attribute^*`).
 
 ### Foreign Key
 
 To indicate a foreign key, you need to specify the relation to which the foreign key refers, then the name of the attribute to use in the current relation, all separated by a `:`. This will automatically match the foreign key to the primary key of the referencing relation.
 
 ```
-RelationName(PK:(PrimaryKey), Relation2: ForeignKey)
+RelationName((PrimaryKey), Relation2: ForeignKey)
 ```
 
 This syntax works for primary key too.
@@ -83,8 +85,8 @@ The `Unique` statement is used to indicate if an attribute (or a group of attrib
 The unique attributes have to be indicated between parenthesis and must be separated by a `,` and a white space. If you want to indicate a group of unique attributes you need to write them in a nested pair of parenthesis.
 
 ```
-FirstRelation(PK:(PrimaryKey), Attribute1, Attribute2, Attribute3) Unique(Attribute1, Attribute2, Attribute3)
-SecondRelation(PK:(PrimaryKey), Attribute1, Attribute2, Attribute3) Unique((Attribute1, Attribute2), Attribute3)
+FirstRelation((PrimaryKey), Attribute1, Attribute2, Attribute3) Unique(Attribute1, Attribute2, Attribute3)
+SecondRelation((PrimaryKey), Attribute1, Attribute2, Attribute3) Unique((Attribute1, Attribute2), Attribute3)
 ```
 
 In `FirstRelation` `Attribute1`, `Attribute2` and `Attribute3` are three different unique attributes.
@@ -111,7 +113,7 @@ USE inputName;
 If this flag is set to `true`, then each attribute must be followed by `>` and the type of the attribute, without any spaces.
 
 ```
-RelationName(PK:(PrimaryKey>int), Attribute1>varchar(10), Attribute2*>date, Table2: ForeignKey>tinyint unsigned) Unique(Attribute1)
+RelationName((PrimaryKey>int), Attribute1>varchar(10), Attribute2*>date, Table2: ForeignKey>tinyint unsigned) Unique(Attribute1)
 ```
 
 
@@ -123,8 +125,8 @@ Each relation will be translated in the corresponding MySql CREATE TABLE query.
 
 So, for example, the following relation
 ```
-Table2(PK:(Table2PK), Attribute1Table2)
-RelationName(PK:(PrimaryKey), Attribute1, Attribute2*, Table2: ForeignKey) Unique(Attribute1)
+Table2((Table2PK), Attribute1Table2)
+RelationName((PrimaryKey), Attribute1, Attribute2*, Table2: ForeignKey) Unique(Attribute1)
 ```
 
 will be translated in the following queries
