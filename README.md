@@ -41,7 +41,7 @@ RelationName((PrimaryKey), Attribute1, Attribute2*, Table2: ForeignKey) Unique(A
 Where:
 - `RelationName` is the name of the relation;
 - `PrimaryKey` is the primary key attribute;
-- `Attribute1`, <b>Attribute2*</b> are the other attributes of the relation;
+- `Attribute1`, `Attribute2*` are the other attributes of the relation;
 - `ForeignKey` is a foreign key, referring to the primary key of the relation <i>Table2</i>.
 
 ⚠️**IMPORTANT!**: relations must be ordered, so that a relation first has all the relations it imports foreign keys to.
