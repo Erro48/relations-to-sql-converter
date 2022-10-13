@@ -57,22 +57,24 @@ class Relation {
 	#getPrimaryKey(line) {
 		let keys = this.#getBody(line)[0].slice(1, -1).split(', ')
 
-		keys.forEach((k) => {
-			let index = keys.indexOf(k)
+		keys.forEach((key) => {
+			let index = keys.indexOf(key)
 
-			k = {
-				value: k.split('>')[0],
-				type: k.split('>')[1],
+			key = {
+				value: key.split('>')[0],
+				type: key.split('>')[1],
 			}
 
-			if (k.value.split(': ').length == 2) {
-				keys[index] = {
-					value: this.#extractForeignKey(k.value),
-					type: k.type,
+			let value = key
+
+			if (key.value.includes(':')) {
+				value = {
+					value: this.#extractForeignKey(key.value),
+					type: key.type,
 				}
-			} else {
-				keys[index] = k
 			}
+
+			keys[index] = value
 		})
 
 		return keys
