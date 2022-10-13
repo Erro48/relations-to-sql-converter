@@ -55,7 +55,7 @@ class Relation {
 	}
 
 	#getPrimaryKey(line) {
-		let keys = this.#getBody(line)[0].slice(4, -1).split(', ')
+		let keys = this.#getBody(line)[0].slice(1, -1).split(', ')
 
 		keys.forEach((k) => {
 			let index = keys.indexOf(k)
