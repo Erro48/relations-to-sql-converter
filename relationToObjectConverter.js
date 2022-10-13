@@ -46,9 +46,11 @@ class Relation {
 
 	#getBody(line) {
 		line = line.substring(line.indexOf('('))
-		if (line.indexOf(' Unique') !== -1) {
+
+		if (line.includes('Unique')) {
 			line = line.substring(0, line.indexOf(' Unique'))
 		}
+
 		line = line.slice(1, -1)
 
 		return this.#splitByNestedParenthesis(line, ', ')
