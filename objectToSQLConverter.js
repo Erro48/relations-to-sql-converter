@@ -65,6 +65,7 @@ function convertObjectToSQL(obj, typeFlag) {
 				value,
 				type,
 				nullable: false,
+				autoIncrement: key.autoIncrement,
 			})
 			constraintsPK.push(value)
 		})
@@ -95,6 +96,7 @@ function convertObjectToSQL(obj, typeFlag) {
 				value,
 				type,
 				nullable: attr.nullable,
+				autoIncrement: attr.autoIncrement,
 			})
 		})
 
@@ -136,10 +138,8 @@ function convertObjectToSQL(obj, typeFlag) {
 			attr.nullable ? '' : 'NOT NULL'
 		}`
 
-		query +=
-			attributes.indexOf(attr) == 0 && attr.type.includes('int')
-				? ` AUTO_INCREMENT`
-				: ''
+		query += `${attr.autoIncrement ? ' AUTO_INCREMENT' : ''}`
+
 		query += `,\n`
 	})
 

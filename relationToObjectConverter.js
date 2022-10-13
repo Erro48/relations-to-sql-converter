@@ -61,22 +61,39 @@ class Relation {
 
 		keys.forEach((key) => {
 			let index = keys.indexOf(key)
+			let autoIncrement = false
+			let hasForeignKey = false
 
 			key = {
 				value: key.split('>')[0],
 				type: key.split('>')[1],
 			}
 
-			let value = key
+			let value = key.value
 
 			if (key.value.includes(':')) {
-				value = {
-					value: this.#extractForeignKey(key.value),
-					type: key.type,
-				}
+				key.value = this.#extractForeignKey(key.value)
+				value = key.value.attribute
+				hasForeignKey = true
 			}
 
-			keys[index] = value
+			if (value.includes('^')) {
+				value = key.value.replace('^', '')
+				autoIncrement = true
+			}
+
+			if (hasForeignKey) {
+				key.value.attribute = value
+			} else {
+				key.value = value
+			}
+
+			key = {
+				...key,
+				autoIncrement,
+			}
+
+			keys[index] = key
 		})
 
 		return keys
@@ -90,6 +107,7 @@ class Relation {
 			let index = body.indexOf(attribute)
 			let nullable = false
 			let autoIncrement = false
+			let hasForeignKey = false
 
 			attribute = {
 				value: attribute.split('>')[0],
@@ -101,16 +119,23 @@ class Relation {
 			if (attribute.value.includes(':')) {
 				attribute.value = this.#extractForeignKey(attribute.value)
 				value = attribute.value.attribute
+				hasForeignKey = true
 			}
 
 			if (value.includes('*')) {
-				attribute.value = attribute.value.replace('*', '')
+				value = value.replace('*', '')
 				nullable = true
 			}
 
 			if (value.includes('^')) {
-				attribute.value = attribute.value.replace('^', '')
+				value = value.replace('^', '')
 				autoIncrement = true
+			}
+
+			if (hasForeignKey) {
+				attribute.value.attribute = value
+			} else {
+				attribute.value = value
 			}
 
 			attribute = {
