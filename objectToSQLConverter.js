@@ -134,7 +134,13 @@ function convertObjectToSQL(obj, typeFlag) {
 	attributes.forEach((attr) => {
 		query += `\t${attr.value} ${typeFlag ? attr.type : ''} ${
 			attr.nullable ? '' : 'NOT NULL'
-		},\n`
+		}`
+
+		query +=
+			attributes.indexOf(attr) == 0 && attr.type.includes('int')
+				? ` AUTO_INCREMENT`
+				: ''
+		query += `,\n`
 	})
 
 	query += `\tCONSTRAINT PK_${obj.name} PRIMARY KEY (${constraintsPK.join(
