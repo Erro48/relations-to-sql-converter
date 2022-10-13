@@ -83,28 +83,39 @@ class Relation {
 		body.shift()
 
 		body.forEach((attribute) => {
-			let objAttribute
 			let index = body.indexOf(attribute)
+			let nullable = false
+			let autoIncrement = false
 
 			attribute = {
 				value: attribute.split('>')[0],
 				type: attribute.split('>')[1],
 			}
 
-			let value =
-				attribute.value.split(': ').length == 2
-					? this.#extractForeignKey(attribute.value)
-					: attribute.value
+			let value = attribute.value
 
-			objAttribute = attribute.value.includes('*')
-				? {
-						value: value.replace('*', ''),
-						nullable: true,
-						type: attribute.type,
-				  }
-				: { value, nullable: false, type: attribute.type }
+			if (attribute.value.includes(':')) {
+				attribute.value = this.#extractForeignKey(attribute.value)
+				value = attribute.value.attribute
+			}
 
-			body[index] = objAttribute
+			if (value.includes('*')) {
+				attribute.value = attribute.value.replace('*', '')
+				nullable = true
+			}
+
+			if (value.includes('^')) {
+				attribute.value = attribute.value.replace('^', '')
+				autoIncrement = true
+			}
+
+			attribute = {
+				...attribute,
+				nullable,
+				autoIncrement,
+			}
+
+			body[index] = attribute
 		})
 
 		return body
