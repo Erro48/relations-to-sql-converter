@@ -125,10 +125,7 @@ class Relation {
 		let index = line.indexOf('Unique')
 		if (index === -1) return
 
-		let unique = line.substring(index)
-
-		unique = unique.slice(7, -1)
-
+		let unique = line.substring(index).slice(7, -1)
 		let output = this.#splitByNestedParenthesis(unique, ', ')
 
 		output.forEach((attr) => {
